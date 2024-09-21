@@ -62,17 +62,27 @@ class _MyHomePageState extends State<MyHomePage> {
 
       var numberGuessed = int.parse(value);
 
-      if (numberGuessed != _currentNumber) {
-        _failedTries.add(numberGuessed);
+      if (numberGuessed == _currentNumber) {
+        _previousGamesResults.add(GameResult(
+          isWinner: true,
+          numberGuessed: numberGuessed,
+        ));
+
+        _newGame();
         return;
       }
 
-      _previousGamesResults.add(GameResult(
-        isWinner: true,
-        numberGuessed: numberGuessed,
-      ));
+      _failedTries.add(numberGuessed);
 
-      _newGame();
+      if (_failedTries.length >= _gameLevel.maxTries()) {
+        _previousGamesResults.add(GameResult(
+          isWinner: false,
+          numberGuessed: numberGuessed,
+        ));
+
+        _newGame();
+        return;
+      }
     });
   }
 
