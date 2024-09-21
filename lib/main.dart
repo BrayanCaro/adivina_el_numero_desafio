@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -30,9 +32,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _currentNumber = 0;
+  // https://api.dart.dev/stable/3.5.3/dart-math/Random-class.html
+  // Entero de [1, 21)
+  int _currentNumber = Random(32).nextInt(20) + 1;
 
   int _triesCount = 0;
+
+  final _failedTries = <int>[];
 
   final _formKey = GlobalKey<FormState>();
 
@@ -42,7 +48,13 @@ class _MyHomePageState extends State<MyHomePage> {
         return;
       }
 
-      _triesCount++;
+      var numberGuessed = int.parse(value);
+
+      if (numberGuessed != _currentNumber) {
+        _triesCount++;
+        _failedTries.add(numberGuessed);
+        return;
+      }
     });
   }
 
@@ -63,9 +75,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 if (value == null || value.isEmpty) {
                   return 'Favor de introducir un número';
                 }
-                
+
                 final alphanumeric = RegExp(r'^[0-9]+$');
-                if (! alphanumeric.hasMatch(value)) {
+                if (!alphanumeric.hasMatch(value)) {
                   return 'Se debe introducir un número entero';
                 }
 
@@ -74,21 +86,21 @@ class _MyHomePageState extends State<MyHomePage> {
               onFieldSubmitted: _numberGuessed,
             ),
             Text("Intentos: $_triesCount"),
-            const Card(
+            Card(
               child: Column(
                 children: [
-                  Text('Mayor que'),
-                  Text('1'),
-                  Text('2'),
+                  const Text('Mayor que'),
+                  // TODO usar valor calculado greaterThan
+                  for (var i in _failedTries) Text(i.toString()),
                 ],
               ),
             ),
-            const Card(
+            Card(
               child: Column(
                 children: [
-                  Text('Mayor que'),
-                  Text('1'),
-                  Text('2'),
+                  const Text('Mayor que'),
+                  // TODO usar valor calculado lessThan
+                  for (var i in _failedTries) Text(i.toString()),
                 ],
               ),
             ),
