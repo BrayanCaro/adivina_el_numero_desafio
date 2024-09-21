@@ -145,9 +145,17 @@ class _MyHomePageState extends State<MyHomePage> {
                   return 'Favor de introducir un número';
                 }
 
-                final alphanumeric = RegExp(r'^[0-9]+$');
-                if (!alphanumeric.hasMatch(value)) {
+                var numberGuessed = int.tryParse(value);
+                if (numberGuessed == null) {
                   return 'Se debe introducir un número entero';
+                }
+                
+                if (numberGuessed < _gameLevel.minRandomValue()) {
+                  return 'Ingresa un número mayor o igual a ${_gameLevel.minRandomValue()}';
+                }
+
+                if (numberGuessed > _gameLevel.maxRandomValue()) {
+                  return 'Ingresa un número menor o igual a ${_gameLevel.maxRandomValue()}';
                 }
 
                 return null;
