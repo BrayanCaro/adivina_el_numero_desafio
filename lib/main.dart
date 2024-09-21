@@ -36,9 +36,13 @@ class _MyHomePageState extends State<MyHomePage> {
   // Entero de [1, 21)
   int _currentNumber = Random(32).nextInt(20) + 1;
 
-  int _triesCount = 0;
-
   final _failedTries = <int>[];
+
+  get _failedTriesLessThanCurrent =>
+      _failedTries.where((n) => n < _currentNumber);
+
+  get _failedTriesGreaterThanCurrent =>
+      _failedTries.where((n) => n > _currentNumber);
 
   final _formKey = GlobalKey<FormState>();
 
@@ -51,7 +55,6 @@ class _MyHomePageState extends State<MyHomePage> {
       var numberGuessed = int.parse(value);
 
       if (numberGuessed != _currentNumber) {
-        _triesCount++;
         _failedTries.add(numberGuessed);
         return;
       }
@@ -85,22 +88,21 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               onFieldSubmitted: _numberGuessed,
             ),
-            Text("Intentos: $_triesCount"),
+            Text("Intentos: ${_failedTries.length}"),
             Card(
               child: Column(
                 children: [
                   const Text('Mayor que'),
-                  // TODO usar valor calculado greaterThan
-                  for (var i in _failedTries) Text(i.toString()),
+                  for (var i in _failedTriesGreaterThanCurrent)
+                    Text(i.toString()),
                 ],
               ),
             ),
             Card(
               child: Column(
                 children: [
-                  const Text('Mayor que'),
-                  // TODO usar valor calculado lessThan
-                  for (var i in _failedTries) Text(i.toString()),
+                  const Text('Menor que'),
+                  for (var i in _failedTriesLessThanCurrent) Text(i.toString()),
                 ],
               ),
             ),
