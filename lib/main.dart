@@ -1,5 +1,8 @@
-import 'dart:math';
-
+import 'package:adivina_el_numero_desafio/data/game_level/advanced.dart';
+import 'package:adivina_el_numero_desafio/data/game_level/easy.dart';
+import 'package:adivina_el_numero_desafio/data/game_level/extreme.dart';
+import 'package:adivina_el_numero_desafio/data/game_level/game_level.dart';
+import 'package:adivina_el_numero_desafio/data/game_level/medium.dart';
 import 'package:adivina_el_numero_desafio/data/game_result.dart';
 import 'package:flutter/material.dart';
 
@@ -33,11 +36,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // https://api.dart.dev/stable/3.5.3/dart-math/Random-class.html
-  // Entero de [1, 21)
-  int _currentNumber = Random(32).nextInt(20) + 1;
+  int _currentNumber = Easy().getRandomNumber();
 
   var _failedTries = <int>[];
+
+  GameLevel _gameLevel = Easy();
+
+  double _currentSliderValue = 0;
 
   final _previousGamesResults = <GameResult>[];
 
@@ -75,12 +80,40 @@ class _MyHomePageState extends State<MyHomePage> {
     // TODO verificar si hay efectos al hacer setState 2 veces
     setState(() {
       _failedTries = [];
-      _currentNumber = _getRandomNumber();
+      _currentNumber = _gameLevel.getRandomNumber();
     });
   }
 
-  int _getRandomNumber() {
-    return Random(32).nextInt(20) + 1;
+  void _updateGameLevel(double value) {
+    setState(() {
+      _currentSliderValue = value;
+
+      switch (value.round()) {
+        case 1:
+          _gameLevel = Medium();
+        case 2:
+          _gameLevel = Advanced();
+        case 3:
+          _gameLevel = Extreme();
+        default:
+          _gameLevel = Easy();
+      }
+
+      _newGame();
+    });
+  }
+
+  String _getLevelLabel() {
+    switch (_gameLevel) {
+      case Medium():
+        return 'Medio';
+      case Advanced():
+        return 'Avanzado';
+      case Extreme():
+        return 'Extremo';
+      default:
+        return 'Fácil';
+    }
   }
 
   @override
@@ -111,7 +144,8 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               onFieldSubmitted: _numberGuessed,
             ),
-            Text("Intentos: ${_failedTries.length}"),
+            Text(
+                "Intentos: ${_failedTries.length} de ${_gameLevel.maxTries()}"),
             Card(
               child: Column(
                 children: [
@@ -142,6 +176,13 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                 ],
               ),
+            ),
+            Slider(
+              value: _currentSliderValue,
+              max: 3,
+              divisions: 3,
+              label: _getLevelLabel(),
+              onChanged: _updateGameLevel,
             ),
           ],
         ),
