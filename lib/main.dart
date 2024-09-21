@@ -32,6 +32,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
+  final _formKey = GlobalKey<FormState>();
+
   void _incrementCounter() {
     setState(() {
       _counter++;
@@ -45,24 +47,43 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Center(
+      body: Form(
+        key: _formKey,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+            TextFormField(
+              decoration: const InputDecoration(labelText: 'Adivina número'),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+            const Text("Intentos: 0"),
+            const Card(
+              child: Column(
+                children: [
+                  Text('Mayor que'),
+                  Text('1'),
+                  Text('2'),
+                ],
+              ),
+            ),
+            const Card(
+              child: Column(
+                children: [
+                  Text('Mayor que'),
+                  Text('1'),
+                  Text('2'),
+                ],
+              ),
+            ),
+            const Card(
+              child: Column(
+                children: [
+                  Text('Historial'),
+                  Text('1'),
+                  Text('2'),
+                ],
+              ),
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ),
     );
   }
