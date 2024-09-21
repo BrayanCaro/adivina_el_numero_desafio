@@ -60,10 +60,16 @@ class _MyHomePageState extends State<MyHomePage> {
             TextFormField(
               decoration: const InputDecoration(labelText: "Adivina número:"),
               validator: (value) {
-                // TODO validar con regrex el string
-                if (value == '111') {
-                  return 'El valor debe ser un entero';
+                if (value == null || value.isEmpty) {
+                  return 'Favor de introducir un número';
                 }
+                
+                final alphanumeric = RegExp(r'^[0-9]+$');
+                if (! alphanumeric.hasMatch(value)) {
+                  return 'Se debe introducir un número entero';
+                }
+
+                return null;
               },
               onFieldSubmitted: _numberGuessed,
             ),
