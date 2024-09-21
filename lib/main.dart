@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:adivina_el_numero_desafio/data/game_result.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -36,7 +37,9 @@ class _MyHomePageState extends State<MyHomePage> {
   // Entero de [1, 21)
   int _currentNumber = Random(32).nextInt(20) + 1;
 
-  final _failedTries = <int>[];
+  var _failedTries = <int>[];
+
+  final _previousGamesResults = <GameResult>[];
 
   get _failedTriesLessThanCurrent =>
       _failedTries.where((n) => n < _currentNumber);
@@ -58,7 +61,26 @@ class _MyHomePageState extends State<MyHomePage> {
         _failedTries.add(numberGuessed);
         return;
       }
+
+      _previousGamesResults.add(GameResult(
+        isWinner: true,
+        numberGuessed: numberGuessed,
+      ));
+
+      _newGame();
     });
+  }
+
+  void _newGame() {
+    // TODO verificar si hay efectos al hacer setState 2 veces
+    setState(() {
+      _failedTries = [];
+      _currentNumber = _getRandomNumber();
+    });
+  }
+
+  int _getRandomNumber() {
+    return Random(32).nextInt(20) + 1;
   }
 
   @override
@@ -106,12 +128,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
             ),
-            const Card(
+            Card(
               child: Column(
                 children: [
-                  Text('Historial'),
-                  Text('1'),
-                  Text('2'),
+                  const Text('Historial'),
+                  for (var result in _previousGamesResults)
+                    // TODO ver como cambiar el color
+                    Text('${result.numberGuessed}'),
                 ],
               ),
             ),
