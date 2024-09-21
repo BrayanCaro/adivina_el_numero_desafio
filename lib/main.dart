@@ -87,7 +87,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _newGame() {
-    // TODO verificar si hay efectos al hacer setState 2 veces
     setState(() {
       _failedTries = [];
       _currentNumber = _gameLevel.getRandomNumber();
