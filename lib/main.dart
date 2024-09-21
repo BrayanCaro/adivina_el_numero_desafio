@@ -30,13 +30,19 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  int _currentNumber = 0;
+
+  int _triesCount = 0;
 
   final _formKey = GlobalKey<FormState>();
 
-  void _incrementCounter() {
+  void _numberGuessed(value) {
     setState(() {
-      _counter++;
+      if (!_formKey.currentState!.validate()) {
+        return;
+      }
+
+      _triesCount++;
     });
   }
 
@@ -52,9 +58,16 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           children: <Widget>[
             TextFormField(
-              decoration: const InputDecoration(labelText: 'Adivina número'),
+              decoration: const InputDecoration(labelText: "Adivina número:"),
+              validator: (value) {
+                // TODO validar con regrex el string
+                if (value == '111') {
+                  return 'El valor debe ser un entero';
+                }
+              },
+              onFieldSubmitted: _numberGuessed,
             ),
-            const Text("Intentos: 0"),
+            Text("Intentos: $_triesCount"),
             const Card(
               child: Column(
                 children: [
